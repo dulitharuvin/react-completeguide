@@ -21,7 +21,8 @@ class App extends Component {
     otherState: "some other value",
     showPersons: false,
     showCockpit: true,
-    changeCounter: 0
+    changeCounter: 0,
+    authenticated: false
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -31,17 +32,17 @@ class App extends Component {
 
   componentDidMount() {
     console.log('[App.js] componentDidMount');
-  }
+  };
 
   shouldComponentUpdate() {
     console.log('[App.js] shouldComponentUpdate');
     return true;
-  }
+  };
 
   componentDidUpdate() {
     console.log('[App.js] componentDidUpdate');
 
-  }
+  };
 
   nameChangedHandler = (event, id) => {
     const personIndex = this.state.persons.findIndex(p => {
@@ -64,12 +65,16 @@ class App extends Component {
         changeCounter: prevState.changeCounter + 1
       };
     });
-  }
+  };
 
   togglePersonsHandler = () => {
     const doesShow = this.state.showPersons;
     this.setState({ showPersons: !doesShow });
-  }
+  };
+
+  loginHandler = () => {
+    this.setState({ authenticated: true });
+  };
 
   deletePersonHandler = (personIndex) => {
     //const persons = this.state.persons.slice(); splice without argument will coppy the whole array, create a new one and assign it to this const persons
@@ -83,9 +88,13 @@ class App extends Component {
     let persons = null;
 
     if (this.state.showPersons) {
-      persons = <Persons persons={this.state.persons}
-        clicked={this.deletePersonHandler}
-        changed={this.nameChangedHandler} />;
+      persons = (
+        <Persons persons={this.state.persons}
+          clicked={this.deletePersonHandler}
+          changed={this.nameChangedHandler}
+          isAuthenticated={this.state.authenticated}
+        />
+      );
     }
 
     return (
@@ -101,7 +110,8 @@ class App extends Component {
             title={this.props.appTitle}
             showPersons={this.state.showPersons}
             personsLength={this.state.persons.length}
-            clicked={this.togglePersonsHandler} />
+            clicked={this.togglePersonsHandler}
+            login={this.loginHandler} />
         ) : null}
         {persons}
       </Aux>
